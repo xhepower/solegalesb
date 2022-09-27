@@ -1,7 +1,9 @@
 const express = require('express');
-
+const passport = require('passport');
+const { checkRoles } = require('./../middlewares/auth.handler');
 const CuentaService = require('./../services/cuenta.service');
 const validatorHandler = require('./../middlewares/validator.handler');
+
 const {
   createCuentaSchema,
   updateCuentaSchema,
@@ -11,20 +13,28 @@ const {
 const router = express.Router();
 const service = new CuentaService();
 
-router.get('/', async (req, res, next) => {
-  try {
-    const cuentas = await service.find();
-    res.json(cuentas);
-  } catch (error) {
-    next(error);
+router.get(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  checkRoles('user', 'editor'),
+  async (req, res, next) => {
+    try {
+      const cuentas = await service.find();
+      res.json(cuentas);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 router.get(
   '/:id',
+  passport.authenticate('jwt', { session: false }),
+  checkRoles('user', 'editor'),
   validatorHandler(getCuentaSchema, 'params'),
   async (req, res, next) => {
     try {
+      console.log(req.user);
       const { id } = req.params;
       const cuenta = await service.findOne(id);
       res.json(cuenta);
@@ -36,6 +46,8 @@ router.get(
 
 router.post(
   '/',
+  passport.authenticate('jwt', { session: false }),
+  checkRoles('editor'),
   validatorHandler(createCuentaSchema, 'body'),
   async (req, res, next) => {
     try {
@@ -50,6 +62,8 @@ router.post(
 
 router.patch(
   '/:id',
+  passport.authenticate('jwt', { session: false }),
+  checkRoles('editor'),
   validatorHandler(getCuentaSchema, 'params'),
   validatorHandler(updateCuentaSchema, 'body'),
   async (req, res, next) => {
@@ -66,6 +80,8 @@ router.patch(
 
 router.delete(
   '/:id',
+  passport.authenticate('jwt', { session: false }),
+  checkRoles('editor'),
   validatorHandler(getCuentaSchema, 'params'),
   async (req, res, next) => {
     try {

@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 const id = Joi.number().integer();
-const name = Joi.string().min(3).max(15);
+const name = Joi.string().min(3).max(60);
 
 const createCuentaSchema = Joi.object({
   name: name.required(),

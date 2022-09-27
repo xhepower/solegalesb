@@ -3,12 +3,12 @@ const boom = require('@hapi/boom');
 
 const { models } = require('../libs/sequelize');
 
-class IngresosService {
+class EgresosService {
   constructor() {}
 
   async create(data) {
-    const newIngreso = await models.Ingreso.create(data);
-    return newIngreso;
+    const newEgreso = await models.Egreso.create(data);
+    return newEgreso;
   }
 
   async find(query) {
@@ -29,21 +29,21 @@ class IngresosService {
         [Op.lte]: date_max,
       };
     }
-    const ingresos = await models.Ingreso.findAll(options);
-    return ingresos;
+    const egresos = await models.Egreso.findAll(options);
+    return egresos;
   }
 
   async findOne(id) {
-    const ingreso = await models.Ingreso.findByPk(id, {
+    const egreso = await models.Egreso.findByPk(id, {
       include: ['concepto', 'cuenta'],
     });
-    if (!ingreso) {
-      throw boom.notFound('ingreso not found');
+    if (!egreso) {
+      throw boom.notFound('egreso not found');
     }
-    if (ingreso.isBlock) {
-      throw boom.conflict('ingreso is block');
+    if (egreso.isBlock) {
+      throw boom.conflict('egreso is block');
     }
-    return ingreso;
+    return egreso;
   }
 
   async update(id, changes) {
@@ -59,4 +59,4 @@ class IngresosService {
   }
 }
 
-module.exports = IngresosService;
+module.exports = EgresosService;

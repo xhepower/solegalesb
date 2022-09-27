@@ -24,15 +24,20 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DataTypes.STRING,
       },
+      recoveryToken: {
+        allowNull: true,
+        type: Sequelize.DataTypes.STRING,
+        field: 'recovery_token',
+      },
       role: {
         allowNull: false,
         type: Sequelize.DataTypes.STRING,
-        defaultValue: 'customer',
+        defaultValue: 'usuario',
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DataTypes.DATE,
-        field: 'create_at',
+        field: 'created_at',
         defaultValue: Sequelize.NOW,
       },
     });
@@ -114,7 +119,7 @@ module.exports = {
       },
       conceptoId: {
         field: 'concepto_id',
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DataTypes.INTEGER,
         references: {
           model: CONCEPTO_TABLE,
@@ -162,7 +167,7 @@ module.exports = {
       },
       conceptoId: {
         field: 'concepto_id',
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DataTypes.INTEGER,
         references: {
           model: CONCEPTO_TABLE,
@@ -177,9 +182,9 @@ module.exports = {
 
   down: async (queryInterface) => {
     await queryInterface.dropTable(USER_TABLE);
-    await queryInterface.dropTable(CUENTA_TABLE);
-    await queryInterface.dropTable(CONCEPTO_TABLE);
     await queryInterface.dropTable(INGRESO_TABLE);
     await queryInterface.dropTable(EGRESO_TABLE);
+    await queryInterface.dropTable(CUENTA_TABLE);
+    await queryInterface.dropTable(CONCEPTO_TABLE);
   },
 };

@@ -3,7 +3,7 @@ const Joi = require('joi');
 const id = Joi.number().integer();
 const descripcion = Joi.string().min(10);
 const monto = Joi.number();
-const tipo = Joi.string().valid('Efectivo', 'Transferencia', 'Retiro');
+const tipo = Joi.string().valid('Efectivo', 'Transferencia', 'Deposito');
 const cuentaId = Joi.number().integer();
 const conceptoId = Joi.number().integer();
 const date_min = Joi.date();
@@ -12,7 +12,7 @@ const date_max = Joi.date();
 const limit = Joi.number().integer();
 const offset = Joi.number().integer();
 
-const createIngresoSchema = Joi.object({
+const createEgresoSchema = Joi.object({
   descripcion: descripcion,
   monto: monto.required(),
   tipo: tipo.required(),
@@ -22,13 +22,13 @@ const createIngresoSchema = Joi.object({
     otherwise: cuentaId.required(),
   }),
   conceptoId: Joi.when('tipo', {
-    is: 'Retiro',
+    is: 'Deposito',
     then: conceptoId,
     otherwise: conceptoId.required(),
   }),
 });
 
-const updateIngresoSchema = Joi.object({
+const updateEgresoSchema = Joi.object({
   descripcion: descripcion,
   monto: monto,
   tipo: tipo,
@@ -36,11 +36,11 @@ const updateIngresoSchema = Joi.object({
   conceptoId: conceptoId,
 });
 
-const getIngresoSchema = Joi.object({
+const getEgresoSchema = Joi.object({
   id: id.required(),
 });
 
-const queryIngresoSchema = Joi.object({
+const queryEgresoSchema = Joi.object({
   limit,
   offset,
   date_min,
@@ -51,8 +51,8 @@ const queryIngresoSchema = Joi.object({
 });
 
 module.exports = {
-  createIngresoSchema,
-  updateIngresoSchema,
-  getIngresoSchema,
-  queryIngresoSchema,
+  createEgresoSchema,
+  updateEgresoSchema,
+  getEgresoSchema,
+  queryEgresoSchema,
 };

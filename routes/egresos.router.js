@@ -1,25 +1,27 @@
 const express = require('express');
 const passport = require('passport');
-const ConceptoService = require('./../services/concepto.service');
-const validatorHandler = require('./../middlewares/validator.handler');
 const { checkRoles } = require('./../middlewares/auth.handler');
+const EgresosService = require('./../services/egreso.service');
+const validatorHandler = require('./../middlewares/validator.handler');
 const {
-  createConceptoSchema,
-  updateConceptoSchema,
-  getConceptoSchema,
-} = require('./../schemas/concepto.schema');
+  createEgresoSchema,
+  updateEgresoSchema,
+  getEgresoSchema,
+  queryEgresoSchema,
+} = require('./../schemas/egreso.schema');
 
 const router = express.Router();
-const service = new ConceptoService();
+const service = new EgresosService();
 
 router.get(
   '/',
   passport.authenticate('jwt', { session: false }),
   checkRoles('user', 'editor'),
+  validatorHandler(queryEgresoSchema, 'query'),
   async (req, res, next) => {
     try {
-      const conceptos = await service.find();
-      res.json(conceptos);
+      const egresos = await service.find(req.query);
+      res.json(egresos);
     } catch (error) {
       next(error);
     }
@@ -30,12 +32,12 @@ router.get(
   '/:id',
   passport.authenticate('jwt', { session: false }),
   checkRoles('user', 'editor'),
-  validatorHandler(getConceptoSchema, 'params'),
+  validatorHandler(getEgresoSchema, 'params'),
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      const concepto = await service.findOne(id);
-      res.json(concepto);
+      const egreso = await service.findOne(id);
+      res.json(egreso);
     } catch (error) {
       next(error);
     }
@@ -46,12 +48,12 @@ router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
   checkRoles('user', 'editor'),
-  validatorHandler(createConceptoSchema, 'body'),
+  validatorHandler(createEgresoSchema, 'body'),
   async (req, res, next) => {
     try {
       const body = req.body;
-      const newConcepto = await service.create(body);
-      res.status(201).json(newConcepto);
+      const newEgreso = await service.create(body);
+      res.status(201).json(newEgreso);
     } catch (error) {
       next(error);
     }
@@ -62,14 +64,14 @@ router.patch(
   '/:id',
   passport.authenticate('jwt', { session: false }),
   checkRoles('editor'),
-  validatorHandler(getConceptoSchema, 'params'),
-  validatorHandler(updateConceptoSchema, 'body'),
+  validatorHandler(getEgresoSchema, 'params'),
+  validatorHandler(updateEgresoSchema, 'body'),
   async (req, res, next) => {
     try {
       const { id } = req.params;
       const body = req.body;
-      const concepto = await service.update(id, body);
-      res.json(concepto);
+      const egreso = await service.update(id, body);
+      res.json(egreso);
     } catch (error) {
       next(error);
     }
@@ -80,7 +82,7 @@ router.delete(
   '/:id',
   passport.authenticate('jwt', { session: false }),
   checkRoles('editor'),
-  validatorHandler(getConceptoSchema, 'params'),
+  validatorHandler(getEgresoSchema, 'params'),
   async (req, res, next) => {
     try {
       const { id } = req.params;

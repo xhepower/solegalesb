@@ -1,5 +1,6 @@
 const express = require('express');
-
+const passport = require('passport');
+const { checkRoles } = require('./../middlewares/auth.handler');
 const IngresosService = require('./../services/ingreso.service');
 const validatorHandler = require('./../middlewares/validator.handler');
 const {
@@ -14,6 +15,8 @@ const service = new IngresosService();
 
 router.get(
   '/',
+  passport.authenticate('jwt', { session: false }),
+  checkRoles('user', 'editor'),
   validatorHandler(queryIngresoSchema, 'query'),
   async (req, res, next) => {
     try {
@@ -27,6 +30,8 @@ router.get(
 
 router.get(
   '/:id',
+  passport.authenticate('jwt', { session: false }),
+  checkRoles('user', 'editor'),
   validatorHandler(getIngresoSchema, 'params'),
   async (req, res, next) => {
     try {
@@ -41,6 +46,8 @@ router.get(
 
 router.post(
   '/',
+  passport.authenticate('jwt', { session: false }),
+  checkRoles('user', 'editor'),
   validatorHandler(createIngresoSchema, 'body'),
   async (req, res, next) => {
     try {
@@ -55,6 +62,8 @@ router.post(
 
 router.patch(
   '/:id',
+  passport.authenticate('jwt', { session: false }),
+  checkRoles('editor'),
   validatorHandler(getIngresoSchema, 'params'),
   validatorHandler(updateIngresoSchema, 'body'),
   async (req, res, next) => {
@@ -71,6 +80,8 @@ router.patch(
 
 router.delete(
   '/:id',
+  passport.authenticate('jwt', { session: false }),
+  checkRoles('editor'),
   validatorHandler(getIngresoSchema, 'params'),
   async (req, res, next) => {
     try {

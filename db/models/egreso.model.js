@@ -3,9 +3,9 @@ const { Model, DataTypes, Sequelize } = require('sequelize');
 const { CUENTA_TABLE } = require('./cuenta.model');
 const { CONCEPTO_TABLE } = require('./concepto.model');
 
-const INGRESO_TABLE = 'ingresos';
+const EGRESO_TABLE = 'egresos';
 
-const IngresoSchema = {
+const EgresoSchema = {
   id: {
     allowNull: false,
     autoIncrement: true,
@@ -54,7 +54,7 @@ const IngresoSchema = {
   },
 };
 
-class Ingreso extends Model {
+class Egreso extends Model {
   static associate(models) {
     this.belongsTo(models.Cuenta, { as: 'cuenta' });
     this.belongsTo(models.Concepto, { as: 'concepto' });
@@ -63,11 +63,11 @@ class Ingreso extends Model {
   static config(sequelize) {
     return {
       sequelize,
-      tableName: INGRESO_TABLE,
-      modelName: 'Ingreso',
+      tableName: EGRESO_TABLE,
+      modelName: 'Egreso',
       timestamps: false,
     };
   }
 }
 
-module.exports = { Ingreso, IngresoSchema, INGRESO_TABLE };
+module.exports = { Egreso, EgresoSchema, EGRESO_TABLE };
