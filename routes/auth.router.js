@@ -2,7 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const validatorHandler = require('./../middlewares/validator.handler');
 const AuthService = require('./../services/auth.service');
-const { authSchema } = require('./../schemas/auth.schema');
+const { authSchema, recoverySchema } = require('./../schemas/auth.schema');
 const router = express.Router();
 const service = new AuthService();
 
@@ -35,14 +35,18 @@ router.post(
   }
 );
 
-router.post('/change-password', async (req, res, next) => {
-  try {
-    const { token, newPassword } = req.body;
-    const rta = await service.changePassword(token, newPassword);
-    res.json(rta);
-  } catch (error) {
-    next(error);
+router.post(
+  '/change-password',
+  validatorHandler(recoverySchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const { token, newPassword } = req.body;
+      const rta = await service.changePassword(token, newPassword);
+      res.json(rta);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 module.exports = router;

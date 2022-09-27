@@ -31,9 +31,19 @@ class AuthService {
       token,
     };
   }
+  signTokenRecovery(user) {
+    const payload = {
+      sub: user.id,
+      role: user.role,
+    };
+    const token = jwt.sign(payload, config.jwtSecretRecovery);
+    return {
+      token,
+    };
+  }
   async changePassword(token, newPassword) {
     try {
-      const payload = jwt.verify(token, config.jwtSecret);
+      const payload = jwt.verify(token, config.jwtSecretRecovery);
       const user = await service.findOne(payload.sub);
       if (user.recoveryToken !== token) {
         throw boom.unauthorized();
@@ -51,7 +61,9 @@ class AuthService {
       throw boom.unauthorized();
     }
     const payload = { sub: user.id };
-    const token = jwt.sign(payload, config.jwtSecret, { expiresIn: '15min' });
+    const token = jwt.sign(payload, config.jwtSecretRecovery, {
+      expiresIn: '15min',
+    });
     const link = `http://myfrontend.com/recovery?token=${token}`;
     await service.update(user.id, { recoveryToken: token });
     const mail = {
