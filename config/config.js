@@ -9,6 +9,7 @@ const config = {
   jwtSecretRecovery: process.env.JWT_SECRET_RECOVERY,
   smtpEmail: process.env.SMTP_EMAIL,
   smtpPassword: process.env.SMTP_PASSWORD,
+  myFrontend: process.env.MY_FRONTEND,
 };
 
 module.exports = { config };

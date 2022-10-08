@@ -64,13 +64,13 @@ class AuthService {
     const token = jwt.sign(payload, config.jwtSecretRecovery, {
       expiresIn: '15min',
     });
-    const link = `http://myfrontend.com/recovery?token=${token}`;
+    const link = `${config.myFrontend}/recovery?token=${token}`;
     await service.update(user.id, { recoveryToken: token });
     const mail = {
       from: config.smtpEmail,
       to: `${user.email}`,
       subject: 'Email para recuperar contraseña',
-      html: `<b>Ingresa a este link => ${link}</b>`,
+      html: `<b>Ingresa a este <a href="${link}">LINK</a><br></b>`,
     };
     const rta = await this.sendMail(mail);
     return rta;
